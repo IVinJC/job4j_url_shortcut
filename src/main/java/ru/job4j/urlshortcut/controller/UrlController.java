@@ -15,8 +15,7 @@ import ru.job4j.urlshortcut.util.PasswordGenerator;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,7 +40,7 @@ public class UrlController {
     }
 
     @GetMapping("/redirect/{code}")
-    public ResponseEntity<String> redirect(@PathVariable ("code") String code) {
+    public ResponseEntity<String> redirect(@PathVariable("code") String code) {
         UrlModel urlModel = urlService.findByCode(code);
         if (urlModel == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -49,5 +48,19 @@ public class UrlController {
         return new ResponseEntity<>(
                 new MultiValueMapAdapter<>(
                         Map.of("HTTP CODE", List.of("302 REDIRECT " + urlModel.getUrl()))), HttpStatus.FOUND);
+    }
+
+    @GetMapping("/statistic")
+    public List<ResponseEntity<HashMap<String, Object>>> statistic() {
+        List<ResponseEntity<HashMap<String, Object>>> list = new ArrayList<>();
+        List<UrlModel> listUrl = urlService.findAll();
+        ResponseEntity<HashMap<String, Object>> response;
+        for (UrlModel urlModel : listUrl) {
+            list.add(ResponseEntity.status(HttpStatus.OK).body(new HashMap<>() {{
+                put("total", urlModel.getStatistic());
+                put("url", urlModel.getUrl());
+            }}));
+        }
+        return list;
     }
 }

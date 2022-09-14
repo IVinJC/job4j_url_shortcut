@@ -13,4 +13,6 @@ public class UrlModel {
     private int id;
     private String url;
     private String code;
+    @Column(name = "url_id")
+    private int statistic;
 }

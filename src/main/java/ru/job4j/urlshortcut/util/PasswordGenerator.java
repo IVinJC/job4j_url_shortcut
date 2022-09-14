@@ -8,8 +8,9 @@ public class PasswordGenerator {
                 + "jklmnopqrstuvwxyz!@#$%&";
         Random rnd = new Random();
         StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++)
+        for (int i = 0; i < len; i++) {
             sb.append(chars.charAt(rnd.nextInt(chars.length())));
+        }
         return sb.toString();
     }
 
@@ -17,8 +18,9 @@ public class PasswordGenerator {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         Random rnd = new Random();
         StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++)
+        for (int i = 0; i < len; i++) {
             sb.append(chars.charAt(rnd.nextInt(chars.length())));
+        }
         return sb.toString();
     }
 }
