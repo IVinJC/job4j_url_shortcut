@@ -1,7 +1,7 @@
 create table IF NOT EXISTS site
 (
     id       serial primary key,
-    site     varchar(255) unique,
+    name     varchar(255) unique,
     login    varchar(255) NOT NULL unique,
     password varchar(255) NOT NULL
 );

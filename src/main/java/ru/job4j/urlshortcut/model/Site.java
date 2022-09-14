@@ -17,7 +17,6 @@ public class Site {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @NonNull
-    @Column(name = "site")
     private String name;
     private String login;
     private String password;
