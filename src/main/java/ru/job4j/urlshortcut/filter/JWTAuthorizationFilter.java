@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static ru.job4j.urlshortcut.filter.JWTAuthenticationFilter.*;
-
-
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     public JWTAuthorizationFilter(AuthenticationManager authManager) {

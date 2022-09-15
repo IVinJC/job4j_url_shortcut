@@ -21,7 +21,7 @@ public class SiteService {
         return siteDbStore.findAll();
     }
 
-    public Site findBySite(String login) {
+    public Site findByLogin(String login) {
         return siteDbStore.findByLogin(login);
     }
 

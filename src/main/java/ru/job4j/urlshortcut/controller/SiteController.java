@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.urlshortcut.model.Message;
@@ -29,14 +30,18 @@ public class SiteController {
 
     @PostMapping("/registration")
     public ResponseEntity<Message> signUp(@RequestBody Site site) {
+        Site sitebyName = service.findByName(site.getName());
+        if (sitebyName != null) {
+            throw new UsernameNotFoundException("Host was registered: " + site.getName());
+        }
         site.setLogin(PasswordGenerator.generateLogin(6));
         site.setPassword(PasswordGenerator.generatePassword(8));
         String password = site.getPassword();
         site.setPassword(encoder.encode(password));
         Optional<Site> saveSite = service.save(site);
-        Site getSite = saveSite.orElse(null);
-        assert getSite != null;
-        Message message = new Message(saveSite.isPresent(), getSite.getLogin(), password);
+        Message message = saveSite.isPresent()
+                ? new Message(true, site.getLogin(), password)
+                : new Message(false, null, null);
         return new ResponseEntity<>(message, HttpStatus.CREATED);
     }
 
@@ -45,14 +50,16 @@ public class SiteController {
         return service.findAll();
     }
 
-    @ExceptionHandler(value = { Exception.class })
+    @ExceptionHandler(value = {Exception.class})
     public void exceptionHandler(Exception e, HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setContentType("application/json");
-        response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() { {
-            put("message", e.getMessage());
-            put("type", e.getClass());
-        }}));
+        response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() {
+            {
+                put("message", e.getMessage());
+                put("type", e.getClass());
+            }
+        }));
         log.error(e.getLocalizedMessage());
     }
 }
