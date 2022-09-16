@@ -20,6 +20,7 @@ public class UrlService {
 
     public UrlModel findByCode(String code) {
         UrlModel url = urlDbStore.findByCode(code);
+        /*UrlModel query = urlDbStore.query(url.getId());*/
         if (url != null) {
             jdbcTemplate.batchUpdate(
                     "UPDATE urls SET url_id = url_id + 1 where id =" + url.getId());
