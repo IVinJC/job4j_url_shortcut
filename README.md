@@ -29,3 +29,51 @@ GET http://localhost:8080/redirect/УНИКАЛЬНЫЙ_КОД
 По сайту можно получить статистку всех адресов и количество вызовов этого адреса.
 Запрос:
 GET http://localhost:8080/statistic
+
+## Развертывание и запуск приложения в Kubernetes(K8s)
+* Перед началом выполнения, убедитесь, что кластер запущен - kubectl get nodes
+* Если нет, то заново запустите его. Опять проверьте, что кластер запущен - minikube start
+* Cохранить файл resources/k8s/postgresdb-secret.yml по пути ./k8s/postgresdb-secret.yml
+* Создаем секрет kubectl apply -f postgresdb-secret.yml
+* Проверяем, что secret создался kubectl get secret
+* Создаем ConfigMap. Cохранить файл resources/k8s/postgresdb-configmap.yml по пути ./k8s/postgresdb-configmap.yml
+* Вносим ConfigMap в кластер kubectl apply -f postgresdb-configmap.yml
+* Проверяем kubectl get configmaps
+* Cохранить файл resources/k8s/postgresdb-deployment.yml по пути ./k8s/postgresdb-deployment.yml
+* Запускаем kubectl apply -f postgresdb-deployment.yml
+* Cохранить файл resources/k8s/spring-deployment.yml по пути ./k8s/spring-deployment.yml
+* Проверяем kubectl logs -l app=spring-boot
+* Набираем комманду minikube service spring-boot-service
+
+### Использование REST API curl:
+Register site
+
+`curl --location --request POST 'http://localhost:8080/register' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"site": "wikipedia.org"
+}'`
+
+Getting token
+
+`curl --location --request POST 'http://localhost:8080/login' \
+--header 'Accept: application/json' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"login": "your_login",
+"password": "your_password"
+}'`
+
+Convert link
+
+`curl --location --request POST 'http://localhost:8080/convert' \
+--header 'Authorization: Bearer your_token\
+--header 'Content-Type: application/json' \
+--data-raw '{
+"url": "https://ru.wikipedia.org/wiki/Java"
+}'`
+
+Getting statistic
+
+`curl --location --request GET 'http://localhost:8080/statistic' \
+--header 'Authorization: Bearer your_token\`
